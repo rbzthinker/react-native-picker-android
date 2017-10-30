@@ -15,7 +15,8 @@ class PickerAndroidItem extends Component {
 
     static propTypes = {
         value: PropTypes.any,
-        label: PropTypes.any
+        label: PropTypes.any,
+        image: PropTypes.any
     };
 
     constructor(props, context) {
@@ -74,7 +75,7 @@ export default class PickerAndroid extends Component {
         let onValueChange = props.onValueChange;
         React.Children.forEach(props.children, (child, index) => {
             child.props.value === props.selectedValue && ( selectedIndex = index );
-            items.push({value: child.props.value, label: child.props.label});
+            items.push({value: child.props.value, label: child.props.label, image: child.props.image});
         });
         //fix issue#https://github.com/beefe/react-native-picker/issues/51
         this.index = selectedIndex;
@@ -174,28 +175,37 @@ export default class PickerAndroid extends Component {
         let upItems = [], middleItems = [], downItems = [];
         items.forEach((item, index) => {
 
-            upItems[index] = <Text
-                key={'up'+index}
-                style={[styles.upText, this.state.itemStyle]}
-                onPress={() => {
-			this._moveTo(index);
-		}}>
-                {item.label}
-            </Text>;
+            upItems[index] = (<View key={'viewUp'+index} style={{flexDirection:'row',alignItems:'center'}}>
+              {item.image?<Image style={{marginRight:5, width:18, height:14}} key={'imageUp'+index} source={item.image}/>:null}
+                  <Text
+                    key={'up'+index}
+                    style={[styles.upText, this.state.itemStyle]}
+                    onPress={() => {
+                      this._moveTo(index);
+                    }}>
+                    {item.label}
+                </Text>
+            </View>);
 
-            middleItems[index] = <Text
-                key={'mid'+index}
-                style={[styles.middleText, this.state.itemStyle]}>{item.label}
-            </Text>;
+            middleItems[index] = (<View key={'viewMid'+index} style={{flexDirection:'row',alignItems:'center'}}>
+                {item.image?<Image style={{marginRight:5, width:26, height:20}} resizeMode={'stretch'} key={'imageMid'+index} source={item.image}/>:null}
+                <Text
+                  key={'mid'+index}
+                  style={[styles.middleText, this.state.itemStyle]}>{item.label}
+                </Text>
+            </View>);
 
-            downItems[index] = <Text
-                key={'down'+index}
-                style={[styles.downText, this.state.itemStyle]}
-                onPress={() => {
-			this._moveTo(index);
-		}}>
-                {item.label}
-            </Text>;
+            downItems[index] = (<View key={'viewDown'+index} style={{flexDirection:'row',alignItems:'center'}}>
+                {item.image?<Image style={{marginRight:5, width:18, height:14}} key={'imageDown'+index} source={item.image}/>:null}
+                <Text
+                  key={'down'+index}
+                  style={[styles.downText, this.state.itemStyle]}
+                  onPress={() => {
+                    this._moveTo(index);
+                  }}>
+                  {item.label}
+                </Text>
+            </View>);
 
         });
         return {upItems, middleItems, downItems,};
