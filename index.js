@@ -275,6 +275,7 @@ let styles = StyleSheet.create({
     },
     up: {
         height: 90,
+        overflow: 'hidden',
         zIndex: 0
     },
     upView: {
