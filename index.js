@@ -46,11 +46,26 @@ export default class PickerAndroid extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = this._stateFromProps(this.props);
+
+        this._panResponder = PanResponder.create({
+            onMoveShouldSetPanResponder: (evt, gestureState) => true,
+            onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+            onPanResponderRelease: this._handlePanResponderRelease.bind(this),
+            onPanResponderMove: this._handlePanResponderMove.bind(this)
+        });
+
+        this.isMoving = false;
+        this.index = this.state.selectedIndex;
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState(this._stateFromProps(nextProps));
+    static getDerivedStateFromProps(props, state) {
+        
+        if (props.selectedValue != state.selectedValue)
+        return this._stateFromProps(props)
+        
+        return null
     }
+
 
     shouldComponentUpdate(nextProps, nextState, context) {
         return JSON.stringify([{
@@ -74,13 +89,14 @@ export default class PickerAndroid extends Component {
         let pickerStyle = props.pickerStyle;
         let itemStyle = props.itemStyle;
         let onValueChange = props.onValueChange;
+        let selectedValue = props.selectedValue
         React.Children.forEach(props.children, (child, index) => {
-            child.props.value === props.selectedValue && ( selectedIndex = index );
+            child.props.value === selectedValue && ( selectedIndex = index );
             items.push({value: child.props.value, label: child.props.label, image: child.props.image});
         });
         //fix issue#https://github.com/beefe/react-native-picker/issues/51
-        this.index = selectedIndex;
         return {
+            selectedValue,
             selectedIndex,
             items,
             pickerStyle,
@@ -153,17 +169,6 @@ export default class PickerAndroid extends Component {
         this.index = (middleHeight % 40 >= 20 ? Math.ceil(middleHeight / 40) : Math.floor(middleHeight / 40)) || 0;
         this._move(0);
         this._onValueChange();
-    }
-
-    componentWillMount() {
-        this._panResponder = PanResponder.create({
-            onMoveShouldSetPanResponder: (evt, gestureState) => true,
-            onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-            onPanResponderRelease: this._handlePanResponderRelease.bind(this),
-            onPanResponderMove: this._handlePanResponderMove.bind(this)
-        });
-        this.isMoving = false;
-        this.index = this.state.selectedIndex;
     }
 
     componentWillUnmount() {
