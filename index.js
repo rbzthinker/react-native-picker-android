@@ -45,7 +45,7 @@ export default class PickerAndroid extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this.state = this._stateFromProps(this.props);
+        this.state = PickerAndroid._stateFromProps(this.props);
 
         this._panResponder = PanResponder.create({
             onMoveShouldSetPanResponder: (evt, gestureState) => true,
@@ -61,7 +61,7 @@ export default class PickerAndroid extends Component {
     static getDerivedStateFromProps(props, state) {
         
         if (props.selectedValue != state.selectedValue)
-        return this._stateFromProps(props)
+        return PickerAndroid._stateFromProps(props)
         
         return null
     }
@@ -83,7 +83,7 @@ export default class PickerAndroid extends Component {
             }, this.context]);
     }
 
-    _stateFromProps(props) {
+    static _stateFromProps(props) {
         let selectedIndex = 0;
         let items = [];
         let pickerStyle = props.pickerStyle;
